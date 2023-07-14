@@ -1,0 +1,22 @@
+[[source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple"
+verify_ssl = false
+
+[dev-packages]
+
+
+[packages]
+flask = "*"
+flask-wtf = "*"
+flask-login = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-restful = "*"
+flask-marshmallow = "*"
+flask-bcrypt = "*"
+marshmallow-sqlalchemy = "*"
+email-validator = "*"
+
+[requires]
+python_version = "3.10"
