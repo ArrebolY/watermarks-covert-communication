@@ -1,4 +1,4 @@
-from flask import request, current_app
+from flask import request, current_app, redirect, url_for
 from flask_login import current_user
 from flask_restful import Resource, reqparse
 
@@ -85,5 +85,5 @@ class PostList(Resource):
 
         db.session.add(post)
         db.session.commit()
-
-        return {"msg": "post created", "post": schema.dump(post)}, 201
+        #重定向
+        return redirect(url_for('home.index'))
