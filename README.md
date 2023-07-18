@@ -47,13 +47,13 @@ return redirect(url_for('home.index'))
 
 ### 1. 在 `pipenv install` 后运行 `flask db init` 时出现缺少模块的报错：
 
-![](imgs/flask_error.png)
+![1](imgs/flask_error.png)
 
 可以删除 `C:\Users\86186\.virtualenvs` 目录下的虚拟环境文件，并重新创建虚拟环境
 
 ### 2. 此时可能会出现另一个关于编码的报错：
 
-![](imgs/unicode_typerror.png)
+![2](imgs/unicode_typerror.png)
 
 这是因为新的 `python` 版本中是含有 `UTF-8` 编码的，因此可以找到文件中的 `learn_flask_the_hard_way\0x09_insta612\app\extensions.py` 进行修改
 
