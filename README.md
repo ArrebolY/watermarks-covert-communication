@@ -36,11 +36,13 @@ return {"msg": "post created", "post": schema.dump(post)}, 201
 return redirect(url_for('home.index'))
 ```
 
-- 跳转验证：
+- 跳转验证：[点这里观看](https://www.bilibili.com/video/BV1nu411G7UY/?spm_id_from=333.999.0.0&vd_source=11bedaab6369e0cb458e3a995d5a8d1d)
 
 <video width="800" height="300" controls>
   <source src="imgs/redirect.mp4" type="video/mp4">
 </video>
+
+
 
 ### 2. 对于在图片载体上嵌入图片水印的尝试
 
