@@ -16,7 +16,9 @@
 
 ## 系统实现功能介绍
 
-- 
+- 使用receriver.py将想要上传的图片中添加水印上传到服务器
+
+- 使用receiver.py将图片下载并提取水印
 
 
 ## 改进的部分
@@ -25,9 +27,7 @@
 
 - 在通过网页提交博文后，返回的内容是一段 `json` 字符串，我们希望将其修改为跳转到展示新博文的页面。
 
-![谁来加一张设置前效果图](imgs/)
-
-- 对 `learn_flask_the_hard_way\0x09_insta612\app\resources\post.py` 中的 `PostList` 类的返回值进行修改
+- 可以对 `learn_flask_the_hard_way\0x09_insta612\app\resources\post.py` 中的 `PostList` 类的返回值进行修改
 
 ```py
 #修改前
@@ -41,6 +41,62 @@ return redirect(url_for('home.index'))
 <video width="800" height="300" controls>
   <source src="imgs/redirect.mp4" type="video/mp4">
 </video>
+
+### 2. 对于在图片载体上嵌入图片水印的尝试
+
+- 具体方案：
+
+1. 设计一个图片转换为二进制的函数：
+
+```py
+watermark_path = r''
+# 将水印图片变为二进制
+def image_to_binary(watermark_path):
+    watermark_path = r''
+    with open(watermark_path, 'rb') as f:
+        img = cv2.imread(watermark_path)
+        img_byte_arr = cv2.imencode('.jpg', img)[1].tobytes()
+    return img_byte_arr
+```
+
+2. 在embed_watermark函数和extract_watermark函数里面更改有关水印的数据，下面为引用watermark_encode函数将水印扩频加密
+
+```py
+# 将水印转换为2进制数据
+
+    global en_watermark
+    en_watermark = watermark_encode(img_byte_arr)
+    
+    iHeight, iWidth = img.shape
+```
+
+
+## 代码解读及Flask框架理解
+
+- html使用了jinja2模板，完成了每次刷新都会从后台调取数据的任务，实现动态页面。
+
+- blueprints规定了在指定地址下使用哪个python文件，为前端传送哪些参数
+以"/"为例，定位到auth/view.py文件中，对文件进行阅读，发现在/login路径中，如果满足条件将会将form作为参数传递给login.html。使用jinja2还可以对此数据进行各种处理，以此为基础，我们可以为不管是网页直接上传，还是使用send脚本上传的图片中都添加水印   
+
+- app.py也就是app中__init__  
+
+- base.html和home.html等均使用模板继承方式实现前端页面，它可以使伟大的前端工程师工作量降低，在修改页面的时候不用每一个都改一遍，而是直接改 **某一个** 模板文件  
+
+- post.py文件中的PostList类实现了重定向功能，操作完成后将回到主页。在这个文件中，还有读取和检验用户传递的数据的功能
+
+## 实验收获
+
+- 学习了jinja2的写法与用法
+
+- 学习了表单的写法与用法
+
+- 学习了不同模块间相互透明的思维（前后端分离，jinja2模板后端只负责将参数扔给前端）
+
+- 学习了图像隐写的算法原理
+
+- 学习了Flask模板继承原理
+
+- 学习了路由、API接口
 
 
 ## 运行时遇到的问题与解决方式
@@ -64,6 +120,16 @@ db = SQLAlchemy(use_native_unicode="UTF-8")
 db = SQLAlchemy()
 ```
 
+### 3. 在修改sender.py的时候出现如下报错：
 
+![](imgs/sender_error.png)
 
+因为我的想法其实是将水印图片转换为二进制存储在参数中，然后再使用扩频等方法将它进行加密，加密之后就可以跟之前的代码一样嵌入到图片当中。但是在图片转化为二进制这过程中，我遇到了一些问题，主要就在于这些参数之间的转换。
 
+最后我求助了老师，并了解了imread的使用方法，最后解决了这个报错。
+
+在写这个函数的时候，同样也有将tostring()转换为tobytes()，如下：
+
+![](imgs/1.png)
+
+不赞成使用tostring
