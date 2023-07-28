@@ -61,6 +61,7 @@ def image_to_binary(watermark_path):
     return img_byte_arr
 ```
 
+
 2. 在embed_watermark函数和extract_watermark函数里面更改有关水印的数据，下面为引用watermark_encode函数将水印扩频加密
 
 ```py
@@ -88,6 +89,24 @@ def binary_to_image(binary_data):
         print(e)
     
 ```
+4.在embed_watermark函数和extract_watermark函数里面更改有关水印的数据
+
+    # 将水印转换为2进制数据
+
+    global en_watermark
+    en_watermark = watermark_encode(img_byte_arr)
+    
+    iHeight, iWidth = img.shape
+
+    countHeight = int(iHeight / 8)
+    countWidth = int(iWidth / 8)
+
+在这一过程中，又遇到了一个困扰了我很长时间的一个问题，就是这个参数en_watermark，它到底是以怎样的一种形态存储的？
+刚开始的时候，我以为它是一个字符串，但是后来我发现它可能只是一个数字，所以就对它的存储状态进行了很多次的更改
+
+而且在这个过程中en_watermark经常报错提前调用了该变量，我在网站上面搜索的办法是需要做global定义，将它定义为全局变量。
+
+最后结果为图片可以嵌入做水印，但在最后的提取会有错误，所以我思考会不会是因为参数这方面的失误导致了后面的工作无法正常进行。
 
 ## 代码解读及Flask框架理解
 
