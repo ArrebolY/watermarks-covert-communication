@@ -16,7 +16,7 @@
 
 ## 系统实现功能介绍
 
-- 使用receriver.py将想要上传的图片中添加水印上传到服务器
+- 使用sender.py将想要上传的图片中添加水印上传到服务器
 
 - 使用receiver.py将图片下载并提取水印
 
@@ -72,6 +72,22 @@ def image_to_binary(watermark_path):
     iHeight, iWidth = img.shape
 ```
 
+3. 在receiver.py中设计一个函数binary_to_image，用来将已嵌入的图片提取出来并写入
+```python
+# 将二进制数据变为图片
+def binary_to_image(binary_data):
+    # 将二进制数据转换为 numpy 数组
+    nparr = np.frombuffer(binary_data.encode(), 'u1')
+    
+    # 将 numpy 数组解码为图像
+    watermark_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    # 将图像保存为文件
+    try:
+        cv2.imwrite('D:\picture\water.jpg', watermark_img)
+    except cv2.error as e:
+        print(e)
+    
+```
 
 ## 代码解读及Flask框架理解
 
@@ -135,3 +151,33 @@ db = SQLAlchemy()
 ![](imgs/1.png)
 
 不赞成使用tostring
+
+### 4. 关于在图片载体上嵌入图片水印的尝试时，图片无法提取的问题：
+
+![](imgs/receiver_error.png)
+
+报错的意思是，认为要写入的图像是空的
+
+首先进行一个排错，对于receiver.py的提取代码，修改为：
+```python
+ef binary_to_image(binary_data):
+    # 将二进制数据转换为 numpy 数组
+    nparr = np.frombuffer(binary_data.encode(), 'u1')
+    cv2.imwrite('D:\picture\\nparr.jpg', nparr)
+    # 将 numpy 数组解码为图像
+    watermark_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    # 将图像保存为文件
+    try:
+        cv2.imwrite('D:\picture\water.jpg', watermark_img)
+    except cv2.error as e:
+        print(e)
+
+    # cv2.imwrite('D:\\picture\\water.jpg', watermark_img)
+```
+添加cv2.imwrite('D:\picture\\nparr.jpg', nparr)，将numpy数组作为图片写入，来验证是哪一步出现了错误，结果如下：
+
+![](imgs/test.jpg)
+
+证明并不是在nparr = np.frombuffer(binary_data.encode(), 'u1')出现了错误，那么就说明imdecode出了错，查询文档可知cv2.imdecode(buf,flags)如果给定的 buf 不是图像数据，则将返回NULL。
+
+暂时无法找到解决方法。

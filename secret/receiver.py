@@ -36,7 +36,7 @@ def binary_to_image(binary_data):
     # 将二进制数据转换为 numpy 数组
     nparr = np.frombuffer(binary_data.encode(), 'u1')
     print(nparr)
-    #cv2.imwrite('C:\\Users\\86186\\Desktop\\6.jpg', nparr)
+    #cv2.imwrite('D:\picture\\nparr.jpg', nparr)
     # 将 numpy 数组解码为图像
     watermark_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     # cv2.imshow('Watermark Image', watermark_img)
@@ -48,6 +48,7 @@ def binary_to_image(binary_data):
     except cv2.error as e:
         print(e)
 
+    # cv2.imwrite('D:\\picture\\water.jpg', watermark_img)
 
 
 if __name__ == '__main__':
